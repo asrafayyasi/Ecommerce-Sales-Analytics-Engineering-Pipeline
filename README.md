@@ -435,20 +435,6 @@ Main visuals:
 
 ---
 
-## Dashboard Preview
-
-Add dashboard screenshots here after exporting them from Power BI.
-
-```markdown
-![Executive Summary](images/executive_summary.png)
-
-![Product Performance](images/product_performance.png)
-
-![Customer Analysis](images/customer_analysis.png)
-```
-
----
-
 ## Key Insights
 
 Some example insights generated from this project:
