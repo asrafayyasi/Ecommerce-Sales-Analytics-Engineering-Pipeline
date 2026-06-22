@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: raw
+    database: ecommerce_analytics
+    schema: public
+    description: "Raw e-commerce data loaded from CSV seed files into PostgreSQL."
+
+    tables:
+      - name: raw_customers
+        description: "Raw customer data containing customer identity, city, email, and signup date."
+
+      - name: raw_products
+        description: "Raw product data containing product name, category, and cost."
+
+      - name: raw_orders
+        description: "Raw order data containing order date, customer ID, and original order status."
+
+      - name: raw_order_items
+        description: "Raw order item data containing product quantity and unit price per order."
+
+      - name: raw_payments
+        description: "Raw payment data containing payment amount, payment method, and payment status."
+
+      - name: raw_refunds
+        description: "Raw refund data containing refund amount, refund date, and refund reason."

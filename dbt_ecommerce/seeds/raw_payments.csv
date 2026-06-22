@@ -1,0 +1,13 @@
+payment_id,order_id,payment_method,payment_amount,payment_status
+501,1001,bank_transfer,390000,paid
+502,1002,e_wallet,400000,paid
+503,1003,credit_card,650000,paid
+504,1004,bank_transfer,1200000,failed
+505,1005,e_wallet,535000,paid
+506,1006,credit_card,250000,paid
+507,1007,e_wallet,120000,pending
+508,1008,bank_transfer,1000000,paid
+509,1009,credit_card,650000,paid
+510,1010,e_wallet,180000,paid
+511,1011,bank_transfer,1700000,paid
+512,1012,e_wallet,350000,failed

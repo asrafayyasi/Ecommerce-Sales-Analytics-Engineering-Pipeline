@@ -1,0 +1,246 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging model untuk data customer yang sudah dibersihkan dari raw_customers."
+    columns:
+      - name: customer_id
+        description: "ID unik customer."
+        tests:
+          - not_null
+          - unique
+
+      - name: email
+        description: "Email customer dalam format lowercase."
+        tests:
+          - not_null
+
+      - name: signup_date
+        description: "Tanggal customer pertama kali mendaftar."
+
+  - name: stg_products
+    description: "Staging model untuk data produk."
+    columns:
+      - name: product_id
+        description: "ID unik produk."
+        tests:
+          - not_null
+          - unique
+
+      - name: product_name
+        description: "Nama produk."
+        tests:
+          - not_null
+
+      - name: category
+        description: "Kategori produk."
+        tests:
+          - not_null
+
+  - name: stg_orders
+    description: "Staging model untuk data order yang sudah distandarkan statusnya."
+    columns:
+      - name: order_id
+        description: "ID unik order."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: "ID customer yang melakukan order."
+        tests:
+          - not_null
+
+      - name: order_date
+        description: "Tanggal order."
+
+      - name: order_status
+        description: "Status order yang sudah distandarkan."
+        tests:
+          - accepted_values:
+              values: ['completed', 'cancelled', 'pending', 'unknown']
+
+  - name: stg_order_items
+    description: "Staging model untuk detail item dalam setiap order."
+    columns:
+      - name: order_item_id
+        description: "ID unik order item."
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        description: "ID order."
+        tests:
+          - not_null
+
+      - name: product_id
+        description: "ID produk."
+        tests:
+          - not_null
+
+      - name: quantity
+        description: "Jumlah produk yang dibeli."
+
+      - name: unit_price
+        description: "Harga jual per unit."
+
+  - name: stg_payments
+    description: "Staging model untuk data pembayaran."
+    columns:
+      - name: payment_id
+        description: "ID unik pembayaran."
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        description: "ID order yang terkait dengan pembayaran."
+        tests:
+          - not_null
+
+      - name: payment_status
+        description: "Status pembayaran yang sudah distandarkan."
+        tests:
+          - accepted_values:
+              values: ['paid', 'failed', 'pending', 'unknown']
+
+  - name: stg_refunds
+    description: "Staging model untuk data refund."
+    columns:
+      - name: refund_id
+        description: "ID unik refund."
+        tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        description: "ID order yang mendapat refund."
+        tests:
+          - not_null
+
+      - name: refund_amount
+        description: "Nominal refund."
+
+  - name: int_order_revenue
+    description: "Intermediate model untuk menghitung gross revenue, total quantity, dan total item per order."
+    columns:
+      - name: order_id
+        description: "ID order."
+        tests:
+          - not_null
+          - unique
+
+      - name: gross_revenue
+        description: "Total revenue kotor sebelum refund."
+
+  - name: int_order_refunds
+    description: "Intermediate model untuk menghitung total refund per order."
+    columns:
+      - name: order_id
+        description: "ID order."
+        tests:
+          - not_null
+          - unique
+
+      - name: refund_amount
+        description: "Total nilai refund per order."
+
+  - name: int_order_payments
+    description: "Intermediate model untuk meringkas pembayaran per order."
+    columns:
+      - name: order_id
+        description: "ID order."
+        tests:
+          - not_null
+          - unique
+
+      - name: total_payment_amount
+        description: "Total nilai pembayaran per order."
+
+  - name: dim_customers
+    description: "Dimension table berisi profil customer dan segmentasi customer."
+    columns:
+      - name: customer_id
+        description: "ID unik customer."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_segment
+        description: "Segmentasi customer berdasarkan jumlah order."
+        tests:
+          - accepted_values:
+              values: ['loyal_customer', 'repeat_customer', 'new_customer', 'no_order']
+
+  - name: dim_products
+    description: "Dimension table berisi data master produk."
+    columns:
+      - name: product_id
+        description: "ID unik produk."
+        tests:
+          - not_null
+          - unique
+
+  - name: fct_sales
+    description: "Fact table utama untuk analisis penjualan, berisi gross revenue, refund, dan net revenue."
+    columns:
+      - name: order_id
+        description: "ID unik order."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: "ID customer yang melakukan transaksi."
+        tests:
+          - not_null
+
+      - name: gross_revenue
+        description: "Revenue kotor sebelum refund."
+        tests:
+          - not_null
+
+      - name: refund_amount
+        description: "Nilai refund untuk order terkait."
+
+      - name: net_revenue
+        description: "Revenue bersih setelah dikurangi refund."
+        tests:
+          - not_null
+
+  - name: mart_monthly_revenue
+    description: "Data mart untuk analisis revenue bulanan."
+    columns:
+      - name: revenue_month
+        description: "Bulan revenue."
+        tests:
+          - not_null
+          - unique
+
+      - name: net_revenue
+        description: "Total revenue bersih per bulan."
+
+  - name: mart_product_performance
+    description: "Data mart untuk menganalisis performa produk berdasarkan quantity, revenue, dan estimasi profit."
+    columns:
+      - name: product_id
+        description: "ID produk."
+        tests:
+          - not_null
+          - unique
+
+      - name: gross_revenue
+        description: "Total revenue kotor per produk."
+
+  - name: mart_customer_segments
+    description: "Data mart untuk melihat jumlah customer berdasarkan segmentasi."
+    columns:
+      - name: customer_segment
+        description: "Kategori segmentasi customer."
+        tests:
+          - not_null
+          - unique
+
+      - name: total_customers
+        description: "Jumlah customer dalam setiap segmen."

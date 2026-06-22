@@ -1,0 +1,4 @@
+refund_id,order_id,refund_amount,refund_date,refund_reason
+9001,1002,50000,2025-05-10,late_delivery
+9002,1008,100000,2025-07-08,damaged_product
+9003,1011,200000,2025-08-05,wrong_item
